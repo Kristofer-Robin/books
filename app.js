@@ -3,6 +3,7 @@ const booksList = document.querySelector('#books-list')
 
 form.addEventListener('submit', addBook)
 document.addEventListener('DOMContentLoaded', getBooksFromLS)
+booksList.addEventListener('click', deleteBook)
 
 function getBooksFromLS(){
     let books
@@ -66,5 +67,30 @@ function addBookToLS(book){
         books = JSON.parse(localStorage.getItem('books'))
     }
     books.push(book)
+    localStorage.setItem('books', JSON.stringify(books))
+}
+
+function deleteBook(event){
+    if (event.target.textContent === 'X'){
+        if(confirm('Do you want to delete this book?')){
+            event.target.parentElement.parentElement.remove()
+            let booksISBN = event.target.parentElement.previousElementSibling.textContent
+            deleteBookFromLS(booksISBN)
+        }
+    }
+}
+
+function deleteBookFromLS(bookISBN){
+    let books
+    if(localStorage.getItem('books') === null){
+        books = []
+    } else {
+        books = JSON.parse(localStorage.getItem('books'))
+    }
+    books.forEach(function (book, index) {
+        if (book[2] === bookISBN){
+            books.splice(index, 1)
+        }
+    })
     localStorage.setItem('books', JSON.stringify(books))
 }
